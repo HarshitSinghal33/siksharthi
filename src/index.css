@@ -1,0 +1,39 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+  h1 {
+    @apply text-4xl font-bold;
+  }
+
+  h2,
+  h3 {
+    @apply text-2xl font-bold;
+  }
+
+  .icon {
+    @apply text-3xl
+  }
+  img {
+    @apply w-[270px] h-[360px] rounded-lg max-sm:w-[150px] max-sm:h-[210px] shadow-xl shadow-[#00000068]
+  }
+}
+
+@layer components {
+  .flexprop {
+    @apply flex justify-between items-center
+  }
+
+  .borderBottom {
+    @apply border-b border-solid border-gray-500 p-3 dark:border-white
+  }
+}
+
+body {
+  @apply overflow-x-hidden text-black bg-white
+}
+
+body.dark {
+  @apply bg-black text-white
+}
