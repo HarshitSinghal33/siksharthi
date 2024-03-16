@@ -64,7 +64,6 @@ export const googleSignup = createAsyncThunk('auth/googleSignup', async (_,{reje
 export const logOutAsync = createAsyncThunk('auth/logout', async (_,{rejectWithValue}) => {
     try {
         await signOut(auth)
-        setCurrentUser(null)
     } catch (error) {
         return rejectWithValue(error.code)
     }
