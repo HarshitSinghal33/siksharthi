@@ -70,8 +70,9 @@ To integrate Firebase with your project:
 
 ### Firebase Setup 
 #### Two collection is firestore - 1: books and 2: users
+![users collection](https://github.com/HarshitSinghal33/siksharthi/assets/124229061/ed62402f-2be4-421d-8770-8a5887a3f627)
 
-
+![books collection](https://github.com/HarshitSinghal33/siksharthi/assets/124229061/4e9d310e-3fbb-4f53-8296-6ed37ae9e50b)
 
 ### Firestore Rules
 The rule match /books/{bookID} make sure that any user can read it. match /pages/{pageDoc} make sure logined user can read the pages. while match /users/{userId} it check that only user can make changes in there Accounts.
