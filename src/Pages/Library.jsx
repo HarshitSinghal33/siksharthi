@@ -1,25 +1,23 @@
 import React from 'react'
-import { motion } from 'framer-motion'
 import Header from '../Component/Header'
 import Footer from '../Component/Footer'
-import Loader from '../Component/Loader'
+import Loader from '../Component/Loaders/Loader'
 import Booklist from '../Component/Book/Booklist'
-import useFetchUserData from '../hook/useFetchUserData'
+import useFetchUserData from '../hook/fetchingData/useFetchUserData'
 import NoData from '../Component/NoData'
 import Error from '../Component/Error'
+import { motion } from 'framer-motion'
 
 export default function Library() {
-    const { bookRead, error, isLoading } = useFetchUserData()
+    const { userData, error, isLoading } = useFetchUserData()
     function renderContent() {
-        if (isLoading) {
-          return <Loader />;
-        } else if (error) {
-          return <Error />;
-        } else if ((bookRead && bookRead.length !== 0)) {
-          return <Booklist path={'readbook'} books={bookRead} handleDelete={true} />
-        } else {
-          return <NoData message={'Get a book from home and it will show here.'} />;
-        }
+        if (isLoading) return <Loader />;
+
+        if (error) return <Error message={error.message}/>; 
+
+        if ((userData.bookRead && userData.bookRead.length !== 0)) return <Booklist path={'readbook'} books={userData.bookRead} handleDelete={true} />;
+
+        return <NoData message={'Get a book from home and it will show here.'} />;
       }
     return (
         <>

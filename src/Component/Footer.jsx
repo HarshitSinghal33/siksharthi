@@ -6,7 +6,6 @@ import { IoLibrary } from "react-icons/io5";
 import { RiHomeHeartFill } from "react-icons/ri";
 import { RiHomeHeartLine } from "react-icons/ri";
 import { mode } from '../Redux/Slice/userAppDataSlice';
-// import styles from './footer.module.css'
 
 export default function Footer() {
   const darkMode = useSelector(mode)

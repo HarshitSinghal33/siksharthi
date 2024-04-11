@@ -2,18 +2,18 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const userBookData = createSlice({
     name: 'userBookData',
-    initialState: { page:0, doc:0 },
+    initialState: { docPageIndex: 1, docID: 1 },
     reducers: {
-        setPage: (state, action) => {
-            state.page = action.payload;
+        setDocPageIndex: (state, action) => {
+            state.docPageIndex = action.payload;
         },
-        setDocID : (state,action)=> {
-            state.doc = action.payload
+        setDocID: (state, action) => {
+            state.docID = action.payload
         }
     }
 })
 
-export const { setPage, setDocID } = userBookData.actions;
-export const currentReadingPage = (state) => state.userBookData.page
-export const currentReadDoc = (state) => state.userBookData.doc
+export const { setDocPageIndex, setDocID } = userBookData.actions;
+export const docPageIndex = (state) => state.userBookData.docPageIndex
+export const docID = (state) => state.userBookData.docID
 export default userBookData.reducer;

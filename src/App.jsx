@@ -5,7 +5,7 @@ import { AnimatePresence } from 'framer-motion'
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { auth } from '../Firebase'
-import {setCurrentUser} from './Redux/Slice/userAuthSlice'
+import { setCurrentUser } from './Redux/Slice/userAuthSlice'
 import { mode, setBookFontSize, setDarkMode, setLanguage } from './Redux/Slice/userAppDataSlice';
 import { onAuthStateChanged } from 'firebase/auth'
 import { ToastContainer } from 'react-toastify';
@@ -17,8 +17,8 @@ const ReadBook = lazy(() => import('./Pages/ReadBook'))
 const BookMark = lazy(() => import('./Pages/BookMark'))
 const Login = lazy(() => import('./Pages/Account/Login'))
 const Signup = lazy(() => import('./Pages/Account/Signup'));
-const UsageInfo =  lazy(() => import('./Pages/UsageInfo'));
-import Loader from './Component/Loader'
+const UsageInfo = lazy(() => import('./Pages/UsageInfo'));
+import Loader from './Component/Loaders/Loader'
 import 'react-toastify/dist/ReactToastify.css'
 
 function App() {
@@ -35,7 +35,7 @@ function App() {
       dispatch(setBookFontSize(BookFontSize))
       dispatch(setDarkMode(darkMode))
       dispatch(setLanguage(language))
-    }else {
+    } else {
       const data = {
         darkMode: false,
         BookFontSize: 21,
@@ -45,8 +45,8 @@ function App() {
     }
     return () => unsubscribe()
   }, [])
-  
-  
+
+
   useEffect(() => {
     if (darkMode) {
       document.body.classList.add('dark');
@@ -57,7 +57,7 @@ function App() {
 
   return (
     <BrowserRouter>
-    <ToastContainer position="top-center" autoClose={2400} />
+      <ToastContainer position="top-center" autoClose={2400} />
       <AnimatePresence mode='wait'>
         <Suspense fallback={<Loader />}>
           <Routes>
@@ -73,7 +73,7 @@ function App() {
             <Route path='/Signup' element={<Signup />} />
             <Route path='/Login' element={<Login />} />
             <Route path='/forgetPassword' element={<ForgetPassword />} />
-            <Route path="*" element={<h1 style={{color:'white'}}>No page found</h1>}/>
+            <Route path="*" element={<h1 style={{ color: 'white' }}>No page found</h1>} />
           </Routes>
         </Suspense>
       </AnimatePresence>

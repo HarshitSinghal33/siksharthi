@@ -1,33 +1,40 @@
-import React from 'react'
-import BookPageContent from '../Component/BookReading/BookPageContent';
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setDocPageIndex, setDocID } from '../Redux/Slice/userBookData';
+import useFetchUserData from '../hook/fetchingData/useFetchUserData';
 import Header from '../Component/Header';
-import useFetchPages from '../hook/useFetchPages';
-import Error from '../Component/Error';
-import Loader from '../Component/Loader';
-import NoData from '../Component/NoData';
+import BookPageContent from '../Component/BookReading/BookPageContent';
 import PageChanger from '../Component/BookReading/PageChanger';
+import Error from '../Component/Error';
+import Loader from '../Component/Loaders/Loader';
 
 export default function ReadBook() {
-    const { data, error, isLoading } = useFetchPages();
-
-    function renderContent() {
-        if (error) {
-            return <Error />
-        } else if (isLoading) {
-            return <Loader />
-        } else if (data) {
-           return( <>
-                <BookPageContent data={data} />
-                <PageChanger data={data} />
-            </>)
-        } else {
-            return <NoData message={'Content not found! Please contact to developer.'} />
+    const { bookID } = useParams();
+    const dispatch = useDispatch();
+    const { userData, error, isLoading } = useFetchUserData();
+    const [isBookPageSet, setIsBookPageSet] = useState(false)
+    
+    useEffect(() => {
+        if (userData) {
+            const book = userData.bookRead.find(iterator => iterator.bookID === bookID);
+            dispatch(setDocPageIndex(book.pageNo))
+            dispatch(setDocID(book.docID))
+            setIsBookPageSet(true)
         }
-    }
+    }, [userData])
+
+    if(isLoading) return <Loader/>;
+
+    if(error) return <Error message={error.message}/>;
+
     return (
         <>
             <Header headerName={'Reading'} backToPath={true} />
-            {renderContent()}
+            {isBookPageSet && <>
+                <BookPageContent />
+                <PageChanger bookID={bookID} userData={userData} />
+            </>}
         </>
     )
 }

@@ -1,69 +1,77 @@
-import React, { useState } from 'react'
-import { doc, updateDoc } from 'firebase/firestore';
-import { fireStoreDb } from '../../../Firebase';
+import React, { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { IoMdArrowDropleftCircle } from "react-icons/io";
 import { IoMdArrowDroprightCircle } from "react-icons/io";
-import { useParams } from 'react-router-dom';
-import { currentReadingPage, currentReadDoc, setDocID, setPage, } from '../../Redux/Slice/userBookData';
-import { uid } from '../../Redux/Slice/userAuthSlice';
-import useFetchUserData from '../../hook/useFetchUserData'
-import useFetchBookInfo from '../../hook/useFetchBookInfo';
+import { docPageIndex, docID, setDocID, setDocPageIndex } from '../../Redux/Slice/userBookData';
 import Chapters from './Chapters';
+import { mode } from '../../Redux/Slice/userAppDataSlice';
+import useBookPageUpdate from '../../hook/update&delete/useBookPageUpdate';
 
-export default function PageChanger() {
-    const userUID = useSelector(uid)
-    const currentDoc = useSelector(currentReadDoc)
-    const { bookID } = useParams()
-    const { bookRead } = useFetchUserData()
-    const darkMode = useSelector((state) => state.userAppData.darkMode);
-    const [chapOpen, setChapOpen] = useState(false)
-    const currentPage = useSelector(currentReadingPage)
-    const { currentBook } = useFetchBookInfo()
+export default function PageChanger({ bookID, userData }) {
     const dispatch = useDispatch()
-
+    const darkMode = useSelector(mode);
+    const currentDoc = useSelector(docID)
+    const currentDocPageIndex = useSelector(docPageIndex)
+    const { pageSetUp } = useBookPageUpdate()
+    const [chapOpen, setChapOpen] = useState(false)
+    const timeoutRef = useRef(null)
+    const currentDocRef = useRef(null);
+    const currentDocPageIndexRef = useRef(null);
+    const currentBookRef = useRef(userData.bookRead.find(book => book.bookID === bookID))
     const handleChapterCompOpen = () => {
         setChapOpen(prev => !prev)
     }
 
-    const updateLocalStorage = (newPage, newDoc) => {
-        const data = {
-            page: newPage,
-            docID: newDoc
+    useEffect(() => {
+        currentDocRef.current = currentDoc;
+        currentDocPageIndexRef.current = currentDocPageIndex;
+        currentBookRef.current = userData.bookRead.find(book => book.bookID === bookID)
+    }, [currentDoc, currentDocPageIndex, userData])
+
+    useEffect(() => {
+        const firestoreBookPageChange = () => {
+            if (currentBookRef.current.docID === currentDocRef.current && currentBookRef.current.pageNo === currentDocPageIndexRef.current) return;
+
+            clearTimeout(timeoutRef.current);
+            pageSetUp(userData, bookID, currentDocRef.current, currentDocPageIndexRef.current);
         }
-        localStorage.setItem(`${bookID}${userUID}`, JSON.stringify(data))
-    }
 
+        const handleUnload = (event) => {
+            event.preventDefault();
+            event.returnValue = '';
+            firestoreBookPageChange()
+        };
+        window.addEventListener('beforeunload', handleUnload);
 
+        return () => {
+            firestoreBookPageChange();
+            window.removeEventListener('beforeunload', handleUnload);
+        }
+    }, [])
 
-    const updateUserBookDoc = async (newPage, newDoc) => {
-        const documentRef = doc(fireStoreDb, 'users', userUID);
-        const updatedArray = bookRead.map(book => book.bookID === bookID ? { ...book, pageNo: newPage, docID: newDoc } : book)
-        await updateDoc(documentRef, { bookRead: updatedArray });
-    }
+    const currentShowPage = (currentDoc * 5 - 5) + currentDocPageIndex;
 
-    function handle(newPage) {
-        const newDoc = Math.floor((newPage) / 5)
+    const handlePageChange = (type, page) => {
+        clearTimeout(timeoutRef.current)
+        const newShownPage = currentShowPage + (page);
+        const newDoc = Math.ceil(newShownPage / 5);
+        const newDocPageIndex = newShownPage - (newDoc * 5 - 5)
         if (currentDoc !== newDoc) {
+            dispatch(setDocPageIndex(type === 'next' ? 1 : 5))
             dispatch(setDocID(newDoc))
-            updateUserBookDoc(newPage, newDoc)
+        } else {
+            dispatch(setDocPageIndex(newDocPageIndex))
         }
-        updateLocalStorage(newPage, newDoc)
-    }
-    const prev = () => {
-        dispatch(setPage(currentPage - 1))
-        handle(currentPage - 1)
-    }
-
-    const next = () => {
-        dispatch(setPage(currentPage + 1))
-        handle(currentPage + 1)
+        timeoutRef.current = setTimeout(() => pageSetUp(userData, bookID, newDoc, newDocPageIndex), 45000);
     }
     return (
-        <footer style={{ marginTop: '75px' }}>
-            <div className={`fixed bottom-0 w-full flex justify-evenly items-center p-3 font-bold  bg-opacity-60  rounded-tl-3xl rounded-tr-3xl backdrop-blur-lg  ${darkMode ? 'shadow-dark bg-black' : 'bg-white shadow-light'}`}>
-                <button disabled={currentPage + 1 === 1}  onClick={() => prev()}><IoMdArrowDropleftCircle size={45} /></button>
+        <footer className='mt-[75px]'>
+            <div className={`fixed bottom-0 w-full flex justify-evenly items-center p-3 font-bold  bg-opacity-60  rounded-tl-3xl rounded-tr-3xl backdrop-blur-lg ${darkMode ? 'shadow-dark bg-black' : 'bg-white shadow-light'}`}>
+
+                <button disabled={currentShowPage === 1} onClick={() => handlePageChange('prev', -1)}>
+                    <IoMdArrowDropleftCircle size={45} />
+                </button>
 
                 <AnimatePresence mode='wait'>
                     {chapOpen
@@ -77,13 +85,15 @@ export default function PageChanger() {
                             transition={{ duration: 0.3 }}
                             onClick={handleChapterCompOpen}
                         >
-                            Page {currentPage + 1}/{currentBook?.pages}
+                            Page {currentShowPage}/{currentBookRef.current?.totalBookPages}
                         </motion.div>
                     }
                 </AnimatePresence>
-                <button disabled={currentBook?.pages === currentPage + 1}  onClick={() => next()}>
+
+                <button disabled={currentShowPage === currentBookRef.current?.totalBookPages} onClick={() => handlePageChange('next', 1)}>
                     <IoMdArrowDroprightCircle size={45} />
                 </button>
+
             </div>
         </footer>
     )

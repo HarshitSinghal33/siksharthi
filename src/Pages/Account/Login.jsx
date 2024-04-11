@@ -12,7 +12,7 @@ import FormContainer from '../../Component/Form/FormContainer';
 import SubmitBtn from '../../Component/Form/SubmitBtn';
 import InputField from '../../Component/Form/InputField';
 import GoogleAuth from '../../Component/Auth/GoogleAuth';
-import Loader from '../../Component/Loader';
+import Loader from '../../Component/Loaders/Loader';
 
 export default function Login() {
   const navigate = useNavigate()

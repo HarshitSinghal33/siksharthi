@@ -1,23 +1,38 @@
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { currentReadingPage } from '../../Redux/Slice/userBookData';
-import { fSize, lang } from '../../Redux/Slice/userAppDataSlice'
-export default function BookPageContent({ data }) {
-    const currentPage = useSelector(currentReadingPage)
+import { docPageIndex } from '../../Redux/Slice/userBookData';
+import { fSize, lang } from '../../Redux/Slice/userAppDataSlice';
+import useFetchPages from '../../hook/fetchingData/useFetchPages';
+import Loader from '../Loaders/Loader'
+import Error from '../Error';
+export default function BookPageContent() {
+    const { data, error, isLoading } = useFetchPages();
+    const currentDocPageIndex = useSelector(docPageIndex)
     const bookFontSize = useSelector(fSize)
     const language = useSelector(lang);
 
     useEffect(() => {
         window.scrollTo({ top: 0 });
-    }, [currentPage, data])
+    }, [currentDocPageIndex, data])
 
-    const content = data.content[currentPage % 5][language]
+    const renderContent = () => {
+        if (isLoading) return <Loader />;
 
+        if (error) return <Error message={error.message} />;
+
+        if (data) {
+            const content = data.content[currentDocPageIndex - 1][language]
+            return (
+                <div className='space-y-6 max-w-[900px] py-6 px-3  rounded-xl h-full'
+                    style={{ fontSize: `${bookFontSize}px` }}
+                    dangerouslySetInnerHTML={{ __html: content }}>
+                </div>
+            )
+        }
+    }
     return (
         <div className='flex justify-center items-center '>
-            <div className='space-y-6 max-w-[900px] py-6 px-3  rounded-xl h-full'
-                style={{ fontSize: `${bookFontSize}px` }}
-                dangerouslySetInnerHTML={{ __html: content }}></div>
+            {renderContent()}
         </div>
     );
 }

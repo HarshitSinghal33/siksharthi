@@ -1,25 +1,23 @@
-import React from 'react'
-import { motion } from 'framer-motion';
+import React from 'react';
 import Header from '../Component/Header';
-import Loader from '../Component/Loader';
+import Loader from '../Component/Loaders/Loader';
 import Booklist from '../Component/Book/Booklist';
 import Footer from '../Component/Footer';
 import Error from '../Component/Error';
 import NoData from '../Component/NoData';
-import useFetchBooks from '../hook/useFetchBooks';
+import useFetchBooks from '../hook/fetchingData/useFetchBooks';
+import { motion } from 'framer-motion';
 
 export default function Home() {
   const { books, error, isLoading } = useFetchBooks()
   function renderContent() {
-    if (isLoading) {
-      return <Loader />;
-    } else if (error) {
-      return <Error />;
-    } else if (books && books.length !== 0) {
-      return <Booklist books={books} path={'bookinfo'} />;
-    } else {
-      return <NoData message={'No book found!'} />;
-    }
+    if (isLoading) return <Loader />;
+
+    if (error) return <Error message={error.message}/>;
+    
+    if (books && books.length !== 0) return <Booklist books={books} path={'bookinfo'} />;
+
+    return <NoData message={'No book found!'} />;
   }
   return (
     <>
