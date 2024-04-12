@@ -36,10 +36,10 @@ export default function Signup() {
       let errMessage;
       if (error === "auth/invalid-email") {
         errMessage = 'Enter a valid email!'
-      } else if (error === "auth/invalid-email") {
-        errMessage = 'Email is Already in use. Try another!'
+      } else if (error === "auth/email-already-in-use") {
+        errMessage = 'Email is Already in use. Try another one!'
       } else {
-        errMessage = 'An error occurred! Please conatct to developer.'
+        errMessage = 'An error occurred! Please contact to developer.'
       }
       setError('email', {
         type: 'manual',
