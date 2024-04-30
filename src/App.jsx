@@ -49,7 +49,11 @@ function App() {
 
 
   useEffect(() => {
-    document.body.classList.toggle('dark')
+    if (darkMode) {
+      document.body.classList.add('dark')
+    }else{
+      document.body.classList.remove('dark')
+    }
   }, [darkMode])
 
   return (
@@ -65,7 +69,7 @@ function App() {
             <Route path='/signup' element={<Signup />} />
             <Route path='/login' element={<Login />} />
             <Route path='/forgetpassword' element={<ForgetPassword />} />
-            <Route path="*" element={<PageNotFound/>} />
+            <Route path="*" element={<PageNotFound />} />
             <Route element={<PrivateRoute />}>
               <Route path='/library' element={<Library />} />
               <Route path='/readbook/:bookID' element={<ReadBook />} />

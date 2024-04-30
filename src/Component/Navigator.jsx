@@ -12,8 +12,8 @@ export default function Navigator() {
   const { pathname } = useLocation();
   const isLibrary = pathname.toLowerCase().includes('library');
   const mainPage = [
-    { pagename: 'home', link: '/', onPageIcon: <RiHomeHeartFill />, offPageIcon: <RiHomeHeartLine /> },
-    { pagename: 'library', link: '/library', onPageIcon: <IoLibrary />, offPageIcon: <IoLibraryOutline /> }
+    { pagename: 'Home', link: '/', onPageIcon: <RiHomeHeartFill />, offPageIcon: <RiHomeHeartLine /> },
+    { pagename: 'Library', link: '/library', onPageIcon: <IoLibrary />, offPageIcon: <IoLibraryOutline /> }
   ]
 
 
@@ -26,9 +26,9 @@ export default function Navigator() {
             <Link to={page.link} key={page.pagename} className='flex items-center gap-1.5'>
               <span>{page.pagename}</span>
 
-              {page.pagename === 'home' && <span className='text-4xl'>{isLibrary ? page.offPageIcon : page.onPageIcon}</span>}
+              {page.pagename === 'Home' && <span className='text-4xl'>{isLibrary ? page.offPageIcon : page.onPageIcon}</span>}
               
-              {page.pagename === 'library' && <span className='text-4xl'>{isLibrary ? page.onPageIcon : page.offPageIcon}</span>}
+              {page.pagename === 'Library' && <span className='text-4xl'>{isLibrary ? page.onPageIcon : page.offPageIcon}</span>}
             </Link>
           ))}
         </div>
