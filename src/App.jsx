@@ -18,41 +18,38 @@ const BookMark = lazy(() => import('./Pages/BookMark'))
 const Login = lazy(() => import('./Pages/Account/Login'))
 const Signup = lazy(() => import('./Pages/Account/Signup'));
 const UsageInfo = lazy(() => import('./Pages/UsageInfo'));
-import Loader from './Component/Loaders/Loader'
+const PageNotFound = lazy(() => import('./Pages/PageNotFound'))
+import Loader from './Component/Loader'
 import 'react-toastify/dist/ReactToastify.css'
 
 function App() {
   const dispatch = useDispatch();
-  const darkMode = useSelector(mode)
+  const darkMode = useSelector(mode);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
       user && dispatch(setCurrentUser(user.uid))
     })
-    const data = localStorage.getItem('userAppData')
-    if (data) {
-      const parsedData = JSON.parse(data);
+    const getInitialState = localStorage.getItem('userAppData')
+    if (getInitialState) {
+      const parsedData = JSON.parse(getInitialState);
       const { BookFontSize, darkMode, language } = parsedData;
       dispatch(setBookFontSize(BookFontSize))
       dispatch(setDarkMode(darkMode))
       dispatch(setLanguage(language))
     } else {
-      const data = {
+      const initialState = {
         darkMode: false,
         BookFontSize: 21,
         language: 'english',
       }
-      localStorage.setItem('userAppData', JSON.stringify(data))
+      localStorage.setItem('userAppData', JSON.stringify(initialState));
     }
     return () => unsubscribe()
   }, [])
 
 
   useEffect(() => {
-    if (darkMode) {
-      document.body.classList.add('dark');
-    } else {
-      document.body.classList.remove('dark');
-    }
+    document.body.classList.toggle('dark')
   }, [darkMode])
 
   return (
@@ -64,16 +61,16 @@ function App() {
             <Route index element={<Home />} />
             <Route path='/home' element={<Home />} />
             <Route path='/info' element={<UsageInfo />} />
+            <Route path='/bookinfo/:bookID' element={<BookInfo />} />
+            <Route path='/signup' element={<Signup />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/forgetpassword' element={<ForgetPassword />} />
+            <Route path="*" element={<PageNotFound/>} />
             <Route element={<PrivateRoute />}>
               <Route path='/library' element={<Library />} />
-              <Route path='/bookinfo/:bookID' element={<BookInfo />} />
               <Route path='/readbook/:bookID' element={<ReadBook />} />
               <Route path='/bookmark' element={<BookMark />} />
             </Route>
-            <Route path='/Signup' element={<Signup />} />
-            <Route path='/Login' element={<Login />} />
-            <Route path='/forgetPassword' element={<ForgetPassword />} />
-            <Route path="*" element={<h1 style={{ color: 'white' }}>No page found</h1>} />
           </Routes>
         </Suspense>
       </AnimatePresence>

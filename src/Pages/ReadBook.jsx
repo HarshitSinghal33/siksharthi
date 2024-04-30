@@ -7,8 +7,7 @@ import Header from '../Component/Header';
 import BookPageContent from '../Component/BookReading/BookPageContent';
 import PageChanger from '../Component/BookReading/PageChanger';
 import Error from '../Component/Error';
-import Loader from '../Component/Loaders/Loader';
-
+import Loader from '../Component/Loader';
 export default function ReadBook() {
     const { bookID } = useParams();
     const dispatch = useDispatch();
@@ -30,7 +29,7 @@ export default function ReadBook() {
 
     return (
         <>
-            <Header headerName={'Reading'} backToPath={true} />
+            <Header headerName={'Reading'} back={true} />
             {isBookPageSet && <>
                 <BookPageContent />
                 <PageChanger bookID={bookID} userData={userData} />

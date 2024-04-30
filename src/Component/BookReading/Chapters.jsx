@@ -7,7 +7,7 @@ import { lang } from '../../Redux/Slice/userAppDataSlice'
 import { setDocPageIndex, setDocID, docPageIndex, docID } from '../../Redux/Slice/userBookData'
 import NoData from '../NoData'
 import useFetchBookInfo from '../../hook/fetchingData/useFetchBookInfo'
-import Loader from '../Loaders/Loader'
+import Loader from '../Loader'
 import Error from '../Error'
 export default function Chapters({ handleChapterCompOpen }) {
     const dispatch = useDispatch()

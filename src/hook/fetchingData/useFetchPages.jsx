@@ -1,42 +1,26 @@
-import { getDocs, collection, query, limit, orderBy, startAt } from "firebase/firestore";
+import { getDoc, doc } from "firebase/firestore";
 import { fireStoreDb } from "../../../Firebase";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { docID } from "../../Redux/Slice/userBookData";
-import { useEffect } from "react";
+import { toast } from "react-toastify";
 export default function useFetchPages() {
-    const queryClient = useQueryClient();
     const currentDocID = useSelector(docID);
     const { bookID } = useParams();
     const getBookData = async () => {
-        const myCollectionRef = collection(fireStoreDb, 'books', bookID, 'pages');
-
-        const queryRef = query(myCollectionRef, orderBy('docID'), startAt(currentDocID - 1 || 1), limit(3));
-        // if currentDoc is available fetch 3 document from it previous one
-        let currentDocumentData = null;
-        const querySnapshot = await getDocs(queryRef);
-        if (querySnapshot.empty) {
-            return;
+        const docRef = await getDoc(doc(fireStoreDb, 'books', bookID, 'pages',`doc_${currentDocID}`));
+        if(!docRef.exists){
+            toast.info('No data found! Contact to developer.');
+            return
         }
-        querySnapshot.forEach((doc) => {
-            if (doc.data().docID === currentDocID) {
-                currentDocumentData = doc.data()
-            }
-            queryClient.setQueryData([bookID, doc.data().docID], doc.data())
-        });
-        return currentDocumentData;
+        return docRef.data();
     };
 
-    const { data, error, isLoading, isFetching } = useQuery([bookID, currentDocID], getBookData, {
+    const { data, error, isLoading, isFetching } = useQuery([bookID, `doc_${currentDocID}`], getBookData, {
         staleTime: 6 * 60 * 60 * 1000,
         cacheTime: 6 * 60 * 60 * 1000
     });
 
-    useEffect(() => {
-        if(isFetching){
-            queryClient.cancelQueries([bookID, currentDocID]);
-        }
-    }, [currentDocID])
     return { data, error, isLoading, isFetching }
 }

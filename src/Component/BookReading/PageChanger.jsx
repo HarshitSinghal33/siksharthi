@@ -7,6 +7,7 @@ import { docPageIndex, docID, setDocID, setDocPageIndex } from '../../Redux/Slic
 import Chapters from './Chapters';
 import { mode } from '../../Redux/Slice/userAppDataSlice';
 import useBookPageUpdate from '../../hook/update&delete/useBookPageUpdate';
+import Button from '../ui/Button';
 
 export default function PageChanger({ bookID, userData }) {
     const dispatch = useDispatch()
@@ -54,11 +55,12 @@ export default function PageChanger({ bookID, userData }) {
 
     const handlePageChange = (type, page) => {
         clearTimeout(timeoutRef.current)
-        const newShownPage = currentShowPage + (page);
+        const newShownPage = currentShowPage + page;
         const newDoc = Math.ceil(newShownPage / 5);
         const newDocPageIndex = newShownPage - (newDoc * 5 - 5)
         if (currentDoc !== newDoc) {
-            dispatch(setDocPageIndex(type === 'next' ? 1 : 5))
+            const index = type === 'next' ? 1 : 5
+            dispatch(setDocPageIndex(index))
             dispatch(setDocID(newDoc))
         } else {
             dispatch(setDocPageIndex(newDocPageIndex))
@@ -68,10 +70,9 @@ export default function PageChanger({ bookID, userData }) {
     return (
         <footer className='mt-[75px]'>
             <div className={`fixed bottom-0 w-full flex justify-evenly items-center p-3 font-bold  bg-opacity-60  rounded-tl-3xl rounded-tr-3xl backdrop-blur-lg ${darkMode ? 'shadow-dark bg-black' : 'bg-white shadow-light'}`}>
-
-                <button disabled={currentShowPage === 1} onClick={() => handlePageChange('prev', -1)}>
+                <Button isDisabled={currentShowPage === 1} onClick={() => handlePageChange('prev', -1) } className='w-fit bg-transparent' variant={darkMode ?  'dark': 'light'}>
                     <IoMdArrowDropleftCircle size={45} />
-                </button>
+                </Button>
 
                 <AnimatePresence mode='wait'>
                     {chapOpen
@@ -90,10 +91,10 @@ export default function PageChanger({ bookID, userData }) {
                     }
                 </AnimatePresence>
 
-                <button disabled={currentShowPage === currentBookRef.current?.totalBookPages} onClick={() => handlePageChange('next', 1)}>
+                <Button isDisabled={currentShowPage === currentBookRef.current?.totalBookPages} onClick={() => handlePageChange('next', 1)} className='w-fit bg-transparent' variant={darkMode ? 'dark': 'light'}>
                     <IoMdArrowDroprightCircle size={45} />
-                </button>
-
+                </Button>
+                
             </div>
         </footer>
     )

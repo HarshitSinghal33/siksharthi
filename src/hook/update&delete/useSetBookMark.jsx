@@ -15,6 +15,7 @@ const createBookMarkData = (currentBook, bookID) => ({
         author: currentBook['hindi'].author
     },
     bookID: bookID,
+    available: currentBook.available
 })
 
 export default function useSetBookMark(currentBook, bookID, { bookMark, bookRead } = userData) {

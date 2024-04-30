@@ -6,6 +6,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { changePasswordAsync } from '../../Redux/Slice/userAuthSlice';
 import { toast } from 'react-toastify';
 import Modal from '../Modal'
+import Button from '../ui/Button';
 export default function ChangePassword() {
     const [isOpen, setIsOpen] = useState()
     const [email, setEmail] = useState()
@@ -36,9 +37,9 @@ export default function ChangePassword() {
             </div>
             <Modal open={isOpen} handleOpen={handleOpen}>
                 <h2 className='break-words'>Get a email to change Password? on {email}</h2>
-                <div className="flex justify-evenly my-3 font-bold dark:text-white">
-                    <button className='bg-[#6495ED] py-3 px-3 rounded-md' onClick={handleOpen}>Cancel</button>
-                    <button className='bg-[#DC143C] py-3 px-3 rounded-md' onClick={handlePasswordChange}>Sent</button>
+                <div className="flex justify-evenly gap-3 mt-3 font-bold dark:text-white">
+                    <Button onClick={handleOpen}>Cancel</Button>
+                    <Button variant={'danger'} onClick={handlePasswordChange}>Sent</Button>
                 </div>
             </Modal>
         </>

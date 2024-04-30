@@ -1,21 +1,24 @@
 import React from 'react'
 import Header from '../Component/Header'
-import Footer from '../Component/Footer'
-import Loader from '../Component/Loaders/Loader'
+import Navigator from '../Component/Navigator'
+import Loader from '../Component/Loader'
 import Booklist from '../Component/Book/Booklist'
 import useFetchUserData from '../hook/fetchingData/useFetchUserData'
 import NoData from '../Component/NoData'
 import Error from '../Component/Error'
 import { motion } from 'framer-motion'
+import { useSelector } from 'react-redux'
+import { uid } from '../Redux/Slice/userAuthSlice'
 
 export default function Library() {
-    const { userData, error, isLoading } = useFetchUserData()
+    const userUID = useSelector(uid);
+    const { userData, error, isLoading } = useFetchUserData(userUID)
     function renderContent() {
         if (isLoading) return <Loader />;
 
         if (error) return <Error message={error.message}/>; 
 
-        if ((userData.bookRead && userData.bookRead.length !== 0)) return <Booklist path={'readbook'} books={userData.bookRead} handleDelete={true} />;
+        if ((userData.bookRead && userData.bookRead.length !== 0)) return <Booklist books={userData.bookRead} isLibrary={true} />;
 
         return <NoData message={'Get a book from home and it will show here.'} />;
       }
@@ -30,7 +33,7 @@ export default function Library() {
             >
                 {renderContent()}
             </motion.div>
-            <Footer />
+            <Navigator />
         </>
     )
 }

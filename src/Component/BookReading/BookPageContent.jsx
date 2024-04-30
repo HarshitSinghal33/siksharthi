@@ -1,19 +1,19 @@
 import React, { useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector } from 'react-redux';
+import DOMPurify from 'dompurify';
 import { docPageIndex } from '../../Redux/Slice/userBookData';
 import { fSize, lang } from '../../Redux/Slice/userAppDataSlice';
 import useFetchPages from '../../hook/fetchingData/useFetchPages';
-import Loader from '../Loaders/Loader'
+import Loader from '../Loader'
 import Error from '../Error';
 export default function BookPageContent() {
     const { data, error, isLoading } = useFetchPages();
     const currentDocPageIndex = useSelector(docPageIndex)
     const bookFontSize = useSelector(fSize)
     const language = useSelector(lang);
-
     useEffect(() => {
         window.scrollTo({ top: 0 });
-    }, [currentDocPageIndex, data])
+    }, [currentDocPageIndex])
 
     const renderContent = () => {
         if (isLoading) return <Loader />;
@@ -21,18 +21,19 @@ export default function BookPageContent() {
         if (error) return <Error message={error.message} />;
 
         if (data) {
-            const content = data.content[currentDocPageIndex - 1][language]
+            const content = data.content[currentDocPageIndex - 1][language];
+            const cleanContent = DOMPurify.sanitize(content);
             return (
                 <div className='space-y-6 max-w-[900px] py-6 px-3  rounded-xl h-full'
                     style={{ fontSize: `${bookFontSize}px` }}
-                    dangerouslySetInnerHTML={{ __html: content }}>
+                    dangerouslySetInnerHTML={{ __html: cleanContent }}>
                 </div>
             )
         }
     }
     return (
-        <div className='flex justify-center items-center '>
+        <section className='flex justify-center items-center '>
             {renderContent()}
-        </div>
+        </section>
     );
 }

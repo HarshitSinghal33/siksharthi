@@ -36,7 +36,7 @@ export default function Setting({ handleSettingOpen }) {
             {userUID && <BookMarked handleSettingOpen={handleSettingOpen} />}
             <StorySage />
             <NavigatorShare />
-            {userUID ? <LogOut /> : <LogIn />}
+            {userUID ? <LogOut /> : <LogIn handleSettingOpen={handleSettingOpen}/>}
         </motion.div>,
         document.getElementById('navBarPortal')
     )

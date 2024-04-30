@@ -18,7 +18,6 @@ export default function useFetchBookInfo() {
     const { data: currentBook, error, isLoading } = useQuery(`${bookID}info`, getBookInfo, {
         staleTime: 6 * 60 * 60 * 1000,
         cacheTime: 6 * 60 * 60 * 1000,
-        keepPreviousData: true,
     })
 
     return { currentBook, error, isLoading }

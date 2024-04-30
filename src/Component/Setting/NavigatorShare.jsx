@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 export default function NavigatorShare(){
     const shareData = {
         title: "Śikṣārthī",
-        text: "Get the knowledge of real world beyond school by reading life changing novel, Join Śikṣārthī Now! ",
+        text: "Read life changing novel, Join Śikṣārthī Now! ",
         url: "https://we-learn-read.web.app/",
     }
     const handleShare = async () => {

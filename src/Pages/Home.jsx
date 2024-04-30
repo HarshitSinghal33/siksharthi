@@ -1,21 +1,28 @@
 import React from 'react';
 import Header from '../Component/Header';
-import Loader from '../Component/Loaders/Loader';
+import Loader from '../Component/Loader';
 import Booklist from '../Component/Book/Booklist';
-import Footer from '../Component/Footer';
+import Navigator from '../Component/Navigator';
 import Error from '../Component/Error';
 import NoData from '../Component/NoData';
 import useFetchBooks from '../hook/fetchingData/useFetchBooks';
 import { motion } from 'framer-motion';
-
+import Button from '../Component/ui/Button'
 export default function Home() {
-  const { books, error, isLoading } = useFetchBooks()
+  const { books, error, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } = useFetchBooks();
   function renderContent() {
     if (isLoading) return <Loader />;
 
-    if (error) return <Error message={error.message}/>;
-    
-    if (books && books.length !== 0) return <Booklist books={books} path={'bookinfo'} />;
+    if (error) return <Error message={error.message} />;
+
+    if (books && books.length !== 0) {
+      const allBooks = books?.pages.flatMap((page) => page.data);
+      return (
+      <>
+        <Booklist books={allBooks} />
+        {hasNextPage && <div className='flex justify-center'><Button className='w-fit' onClick={fetchNextPage} buttonText={'Load more books'} isLoading={isFetchingNextPage}/></div>}
+      </>
+    )}
 
     return <NoData message={'No book found!'} />;
   }
@@ -30,7 +37,7 @@ export default function Home() {
       >
         {renderContent()}
       </motion.div>
-      <Footer />
+      <Navigator />
     </>
   )
 }

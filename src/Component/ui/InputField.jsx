@@ -14,7 +14,7 @@ export default function InputField({ type, name, error, placeHolder, register, l
         <div className='relative mb-6'>
             <label htmlFor={name} className='block font-medium text-base'>{label}</label>
             <div className='relative text-black'>
-                <input className='block h-33 w-full my-3 bg-opacity-7 rounded-md text-sm font-light p-3 placeholder-black  ' type={type === 'password' ? inputType : type} name={name} id={name} placeholder={placeHolder} {...register} />
+                <input className='block h-33 w-full my-3 bg-opacity-7 rounded-md text-sm font-light p-3 placeholder-black focus:outline-none' type={type === 'password' ? inputType : type} name={name} id={name} placeholder={placeHolder} {...register} />
                 {type === 'password' &&
                     <span className='absolute top-1.5 right-2.5 cursor-pointer' onClick={() => handleIsPasswordShown()}>
                         {isPasswordShown

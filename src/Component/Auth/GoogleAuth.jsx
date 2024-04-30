@@ -2,6 +2,7 @@ import React from 'react'
 import { googleSignup } from '../../Redux/Slice/userAuthSlice'
 import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify';
+import Button from '../ui/Button';
 export default function GoogleAuth() {
     const dispatch = useDispatch()
     const handleGoogleSignup = async () => {
@@ -12,6 +13,8 @@ export default function GoogleAuth() {
         }
     }
     return (
-        <div className='my-3 text-center w-full bg-[#FFFFFF45] hover:bg-[#FFFFFF81] text-[#eaf0fb] px-3 py-2 text-lg font-semibold rounded cursor-pointer' onClick={handleGoogleSignup}>Google</div>
+        <div className='w-full px-3 mt-3'>
+            <Button onClick={handleGoogleSignup} buttonText={'Google'} className='w-full bg-[#FFFFFF45] hover:bg-[#ffffff81] hover:opacity-100' />
+        </div>
     )
 }

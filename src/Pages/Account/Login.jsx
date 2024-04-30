@@ -2,21 +2,17 @@ import React from 'react'
 import *  as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { loginAsync,isLoading } from '../../Redux/Slice/userAuthSlice';
+import { loginAsync } from '../../Redux/Slice/userAuthSlice';
 import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { validateEmail, validatePassword } from '../../utils/formValidation';
 import useRedirectChange from '../../hook/useRedirectChange';
-import FormContainer from '../../Component/Form/FormContainer';
-import SubmitBtn from '../../Component/Form/SubmitBtn';
-import InputField from '../../Component/Form/InputField';
-import GoogleAuth from '../../Component/Auth/GoogleAuth';
-import Loader from '../../Component/Loaders/Loader';
+import AuthFormContainer from '../../Component/Auth/AuthFormContainer';
+import InputField from '../../Component/ui/InputField';
+import Loader from '../../Component/Loader';
 
 export default function Login() {
   const navigate = useNavigate()
-  const isLoad = useSelector(isLoading);
   const dispatch = useDispatch();
   const isRedirectLoading = useRedirectChange()
   const schema = yup.object().shape({
@@ -47,36 +43,35 @@ export default function Login() {
   if (isRedirectLoading) return <Loader />;
 
   return (
-    <FormContainer>
-      <form onSubmit={handleSubmit(onSubmit)} className='w-[90%]'>
-        <h3 className='text-center'>Login Here</h3>
-        <InputField
-          label={'Email'}
-          register={register('email')}
-          error={errors.email}
-          type={'email'}
-          name={'emailfield'}
-          placeHolder={'Youremail@email.com'}
-        />
-        <InputField
-          label={'Password'}
-          register={register('password')}
-          error={errors.password}
-          type={'password'}
-          name={'passwordfield'}
-          placeHolder={'Your Password'}
-        />
+    <AuthFormContainer
+      submit={handleSubmit(onSubmit)}
+      formName={'Login Here'}
+      submitButtonText={'Log In'}
+      isGoogleAuth={true}
+      navigationDescription={'Create a new Account!'}
+      navigationPath={'/signup'}
+      navigationText={'Signup'}
+    >
+      <InputField
+        label={'Email'}
+        register={register('email')}
+        error={errors.email}
+        type={'email'}
+        name={'emailfield'}
+        placeHolder={'Youremail@email.com'}
+      />
+      <InputField
+        label={'Password'}
+        register={register('password')}
+        error={errors.password}
+        type={'password'}
+        name={'passwordfield'}
+        placeHolder={'Your Password'}
+      />
 
-        <div className='text-center underline'>
-          <Link to={'/forgetpassword'}>Forget Password?</Link>
-        </div>
-        <SubmitBtn name='Log In' isLoad={isLoad}/>
-        <GoogleAuth />
-      </form>
-      <div className='text-center '>
-        <span>Create a new Account! </span>
-        <Link to={'/signup'} className='underline'>Signup</Link>
+      <div className='text-center underline mb-3'>
+        <Link to={'/forgetpassword'}>Forget Password?</Link>
       </div>
-    </FormContainer>
+    </AuthFormContainer>
   )
 }

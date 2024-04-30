@@ -1,7 +1,11 @@
 # Śikṣārthī
 
-## Version 1.2.0
-The latest version of our app, packed with enhancements to make your experience smoother and more enjoyable. This update focuses on improving error handling and optimizing database management in Firestore for better performance. With the addition of dynamic button loaders, interactions with the app become more engaging. We've also simplified data management by storing book pages directly in the database, eliminating the need for local storage. By trimming unnecessary code, we've made the app leaner and more efficient. 
+## Update 1.3.0
+- Reusable Form Component: Created a AuthFormContainer component to make forms reusable throughout the application.
+- Button Component: Developed a Button component in the UI build for consistent styling and functionality across the app.
+- Usage Info from Database: Implemented retrieval of usage information from the database to enhance user experience.
+- Infinite Loading on Home Page: Integrated infinite loading functionality on the home page to dynamically fetch books for a smoother browsing experience.
+- Minor Updates for Clean and Reusable Code: Made several minor updates to ensure cleaner and more reusable codebase.
 
 ## Overview
 "Siksharthi is a modern book reading app born out of a passion for reading and a frustration with traditional PDFs that often resulted in lost progress. As an avid reader myself, I understand the importance of seamless and immersive reading experiences. Siksharthi offers just that, allowing users to explore and enjoy a diverse library of books without the hassle of losing their progress. With Siksharthi, reading becomes a joyous journey, made convenient and enriching through intuitive features tailored to enhance the reading experience."
@@ -153,3 +157,11 @@ We welcome contributions! To get started, fork the repository, make your changes
 ## License
 
 This project is licensed under the [MIT License](LICENSE.md).
+
+## Previous updates
+### update - 1.2.0
+- Enhanced user experience with smoother interactions and improved error handling.
+- Optimized database management in Firestore for better performance.
+- Introduced dynamic button loaders for more engaging interactions.
+- Simplified data management by storing book pages directly in the database, eliminating the need for local storage.
+- Trimmed unnecessary code for a leaner and more efficient app. 

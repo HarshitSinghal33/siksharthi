@@ -3,6 +3,7 @@ import { FaRegBookmark, FaBookmark } from "react-icons/fa6";
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import useSetBookMark from '../../hook/update&delete/useSetBookMark';
+import Button from '../ui/Button';
 
 export default function BookMarkBtn({ currentBook, userData }) {
   const { bookID } = useParams()
@@ -12,21 +13,31 @@ export default function BookMarkBtn({ currentBook, userData }) {
   const handleBookMarkToogle = async () => {
     try {
       if (isBookMark) {
-        await removeBookMark();
-        setIsBookMark(false)
+        try {
+          await removeBookMark();
+          setIsBookMark(false);
+          toast.info('Bookmark Removed')
+        } catch (error) {
+          toast.error(`An unexpexted error occurred!: ${error.message}`)
+        }
       } else {
-        await addBookMark();
-        setIsBookMark(true)
+        try {
+          await addBookMark();
+          setIsBookMark(true);
+          toast.info('Bookmark Added')
+        } catch (error) {
+          toast.error(`An unexpexted error occurred!: ${error.message}`)
+        }
       }
-    } 
+    }
     catch (error) {
       toast.info(`Error occurred in setting bookmark: ${error.message}`);
     }
   }
 
   return (
-    <div onClick={handleBookMarkToogle} className='mt-3'>
+    <Button onClick={handleBookMarkToogle} variant={'secondary'} className='w-fit'>
       {isBookMark ? <FaBookmark size={24} /> : <FaRegBookmark size={24} />}
-    </div>
+    </Button>
   )
 }
