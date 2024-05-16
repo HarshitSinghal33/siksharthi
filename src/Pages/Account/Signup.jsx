@@ -6,14 +6,11 @@ import { useDispatch } from 'react-redux'
 import { signupAsync } from '../../Redux/Slice/userAuthSlice'
 import { useNavigate } from 'react-router-dom'
 import { validateEmail, validatePassword, recheckPassword } from '../../utils/formValidation';
-import useRedirectChange from '../../hook/useRedirectChange'
 import AuthFormContainer from '../../Component/Auth/AuthFormContainer'
 import InputField from '../../Component/ui/InputField'
-import Loader from '../../Component/Loader'
 
 export default function Signup() {
   const navigate = useNavigate()
-  const isRedirectLoading = useRedirectChange()
   const dispatch = useDispatch()
   const schema = yup.object().shape({
     email: validateEmail(),
@@ -44,10 +41,6 @@ export default function Signup() {
       })
     }
   }
-
-
-  if (isRedirectLoading) return <Loader />
-
 
   return (
     <AuthFormContainer

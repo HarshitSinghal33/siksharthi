@@ -6,15 +6,12 @@ import { loginAsync } from '../../Redux/Slice/userAuthSlice';
 import { useDispatch } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { validateEmail, validatePassword } from '../../utils/formValidation';
-import useRedirectChange from '../../hook/useRedirectChange';
 import AuthFormContainer from '../../Component/Auth/AuthFormContainer';
 import InputField from '../../Component/ui/InputField';
-import Loader from '../../Component/Loader';
 
 export default function Login() {
   const navigate = useNavigate()
   const dispatch = useDispatch();
-  const isRedirectLoading = useRedirectChange()
   const schema = yup.object().shape({
     email: validateEmail(),
     password: validatePassword(),
@@ -29,9 +26,12 @@ export default function Login() {
       await dispatch(loginAsync({ email, password })).unwrap();
       navigate('/')
     } catch (error) {
-      const errMessage = error === 'auth/invalid-credential'
-        ? 'User not found! Please recheck your password and email'
-        : 'An error occurred! Please conatct to developer.';
+      let errMessage;
+      if(error === 'auth/user-not-found' || error === 'auth/wrong-password' || error === 'auth/invalid-credential'){
+        errMessage = 'User not found! Please recheck your password and email'
+      }else{
+        errMessage = 'An error occurred! Please contact to developer.'
+      }
 
       setError('email', {
         type: 'manual',
@@ -39,8 +39,6 @@ export default function Login() {
       })
     }
   }
-
-  if (isRedirectLoading) return <Loader />;
 
   return (
     <AuthFormContainer

@@ -5,7 +5,9 @@ import {
     signOut,
     sendPasswordResetEmail,
     GoogleAuthProvider,
-    signInWithRedirect
+    signInWithPopup,
+    fetchSignInMethodsForEmail,
+    sendEmailVerification
 } from "firebase/auth";
 import { auth } from '../../../Firebase';
 import { setDoc, doc } from 'firebase/firestore';
@@ -13,7 +15,8 @@ import { fireStoreDb } from '../../../Firebase';
 
 const initiatlStates = {
     userUID: null,
-    isLoading: false
+    isLoading: false,
+    isGoogleLogin: false
 }
 
 export const signupAsync = createAsyncThunk('auth/signup', async ({ email, password }, { rejectWithValue }) => {
@@ -25,8 +28,8 @@ export const signupAsync = createAsyncThunk('auth/signup', async ({ email, passw
             bookRead: []
         }
         const documentRef = doc(fireStoreDb, 'users', uid)
-        await setDoc(documentRef, data)
-
+        await setDoc(documentRef, data);
+        await sendEmailVerification(cred.user)
         return uid
     } catch (error) {
         return rejectWithValue(error.code)
@@ -54,9 +57,11 @@ export const changePasswordAsync = createAsyncThunk('auth/changePassword', async
 
 export const googleSignup = createAsyncThunk('auth/googleSignup', async (_,{rejectWithValue}) => {
     try {
-        const googleAuthProvider = new GoogleAuthProvider
-        return signInWithRedirect(auth, googleAuthProvider)
+        const googleAuthProvider = new GoogleAuthProvider;
+        const result = await signInWithPopup(auth, googleAuthProvider);
+        return result.user.uid
     } catch (error) {
+        console.log(error);
         return rejectWithValue(error.code)
     }
 })
@@ -116,10 +121,21 @@ const userAuthSlice = createSlice({
             .addCase(changePasswordAsync.rejected, (state) => {
                 state.isLoading = false;
             })
+            .addCase(googleSignup.pending, (state) => {
+                state.isGoogleLogin = true;
+            })
+            .addCase(googleSignup.fulfilled, (state, action) => {
+                state.userUID = action.payload;
+                state.isGoogleLogin = false;
+            })
+            .addCase(googleSignup.rejected, (state) => {
+                state.isGoogleLogin = false;
+            })
     },
 });
 
 export const { setCurrentUser } = userAuthSlice.actions;
 export const uid = (state) => state.userAuthSlice.userUID;
 export const isLoading = (state) => state.userAuthSlice.isLoading;
+export const isGoogleLogin = (state) => state.userAuthSlice.isGoogleLogin;
 export default userAuthSlice.reducer;

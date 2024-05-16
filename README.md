@@ -1,11 +1,10 @@
 # Śikṣārthī
 
-## Update 1.3.0
-- Reusable Form Component: Created a AuthFormContainer component to make forms reusable throughout the application.
-- Button Component: Developed a Button component in the UI build for consistent styling and functionality across the app.
-- Usage Info from Database: Implemented retrieval of usage information from the database to enhance user experience.
-- Infinite Loading on Home Page: Integrated infinite loading functionality on the home page to dynamically fetch books for a smoother browsing experience.
-- Minor Updates for Clean and Reusable Code: Made several minor updates to ensure cleaner and more reusable codebase.
+## Update 1.4.0
+- Fixed Google Login: Resolved issues with Google Authentication.
+- Email Verification: Added email verification reminder (if applicable).
+- Tailwind CSS Fix: Ensured consistent styling on usageInfo page.
+- Code Cleanup: Improved code readability.
 
 ## Overview
 "Siksharthi is a modern book reading app born out of a passion for reading and a frustration with traditional PDFs that often resulted in lost progress. As an avid reader myself, I understand the importance of seamless and immersive reading experiences. Siksharthi offers just that, allowing users to explore and enjoy a diverse library of books without the hassle of losing their progress. With Siksharthi, reading becomes a joyous journey, made convenient and enriching through intuitive features tailored to enhance the reading experience."
@@ -86,11 +85,14 @@ The rule match /books/{bookID} make sure that any user can read it. match /pages
 ```
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /books/{document=**}{
-    allow read: if resource.data.available == true;
-    match /pages/{pageDoc}{
-      allow read : if request.auth != null;
+    match /books/{bookID}{
+    allow read;
+      match /pages/{pageDoc}{
+       allow read: if request.auth != null && get(/databases/$(database)/documents/books/$(bookID)).data.available == true;
       }
+    } 
+    match /appdata/{doc=**}{
+       allow read;
     }
     match /users/{userId} {
      allow read, write: if request.auth != null && request.auth.uid == userId; // Allows access if authenticated user's UID matches userId
@@ -160,8 +162,12 @@ This project is licensed under the [MIT License](LICENSE.md).
 
 ## Previous updates
 ### update - 1.2.0
-- Enhanced user experience with smoother interactions and improved error handling.
-- Optimized database management in Firestore for better performance.
-- Introduced dynamic button loaders for more engaging interactions.
-- Simplified data management by storing book pages directly in the database, eliminating the need for local storage.
-- Trimmed unnecessary code for a leaner and more efficient app. 
+- Better UX: Smoother interactions, clearer errors, engaging loaders.
+- Faster Database: Optimized Firestore for better performance.
+- Simpler Data: Stores book pages directly in database (no local storage).
+- Leaner Code: Removed unnecessary parts for efficiency.
+
+### update - 1.3.0
+- Reusable Parts: Built reusable form and button components.
+- Data & Browsing: Fetches usage info and enables infinite book loading.
+- Clean Code: Minor tweaks for better code organization.

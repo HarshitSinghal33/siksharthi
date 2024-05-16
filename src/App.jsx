@@ -1,13 +1,9 @@
-import React, { lazy, Suspense } from 'react'
+import React, { lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { PrivateRoute } from './Component/Auth/PrivateRoute'
 import { AnimatePresence } from 'framer-motion'
-import { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { auth } from '../Firebase'
-import { setCurrentUser } from './Redux/Slice/userAuthSlice'
-import { mode, setBookFontSize, setDarkMode, setLanguage } from './Redux/Slice/userAppDataSlice';
-import { onAuthStateChanged } from 'firebase/auth'
+import { useSelector } from 'react-redux';
+import { mode } from './Redux/Slice/userAppDataSlice';
 import { ToastContainer } from 'react-toastify';
 const Home = lazy(() => import('./Pages/Home'))
 const Library = lazy(() => import('./Pages/Library'))
@@ -21,37 +17,17 @@ const UsageInfo = lazy(() => import('./Pages/UsageInfo'));
 const PageNotFound = lazy(() => import('./Pages/PageNotFound'))
 import Loader from './Component/Loader'
 import 'react-toastify/dist/ReactToastify.css'
+import useInitialStateHandle from './hook/useInitialStateHandle';
+import EmailVerifyNotification  from './Component/EmailVerifyNotification';
 
 function App() {
-  const dispatch = useDispatch();
   const darkMode = useSelector(mode);
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, user => {
-      user && dispatch(setCurrentUser(user.uid))
-    })
-    const getInitialState = localStorage.getItem('userAppData')
-    if (getInitialState) {
-      const parsedData = JSON.parse(getInitialState);
-      const { BookFontSize, darkMode, language } = parsedData;
-      dispatch(setBookFontSize(BookFontSize))
-      dispatch(setDarkMode(darkMode))
-      dispatch(setLanguage(language))
-    } else {
-      const initialState = {
-        darkMode: false,
-        BookFontSize: 21,
-        language: 'english',
-      }
-      localStorage.setItem('userAppData', JSON.stringify(initialState));
-    }
-    return () => unsubscribe()
-  }, [])
-
-
+  const { isEmailVerified } = useInitialStateHandle();
+  
   useEffect(() => {
     if (darkMode) {
       document.body.classList.add('dark')
-    }else{
+    } else {
       document.body.classList.remove('dark')
     }
   }, [darkMode])
@@ -59,6 +35,7 @@ function App() {
   return (
     <BrowserRouter>
       <ToastContainer position="top-center" autoClose={2400} />
+      <EmailVerifyNotification isEmailVerified={isEmailVerified}/>
       <AnimatePresence mode='wait'>
         <Suspense fallback={<Loader />}>
           <Routes>

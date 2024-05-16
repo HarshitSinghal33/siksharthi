@@ -20,7 +20,7 @@ export default function useDeleteBookRead() {
                 bookRead: userData.bookRead.filter(book => book.bookID !== bookID)
             })
         } catch (error) {
-            toast.error(`Error occurred in delete book: ${error.message}`)
+            toast.error(`Error Occurred in delete book: ${error.message}`)
         } finally {
             setIsLoading(false)
         }
